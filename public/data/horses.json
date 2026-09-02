@@ -1,0 +1,295 @@
+[
+  {
+    "id": "s_tokai_teio",
+    "name": "トウカイテイオー",
+    "kana": "とうかいていおー",
+    "gender": "牡",
+    "sireId": "s_symboli_rudolf",
+    "damId": "d_tokai_natural",
+    "parentSystem": "ヘロド系",
+    "subSystem": "パーソロン系",
+    "systemType": "SP",
+    "factors": ["大種牡馬", "スピード"]
+  },
+  {
+    "id": "s_symboli_rudolf",
+    "name": "シンボリルドルフ",
+    "kana": "しんぼりるどるふ",
+    "gender": "牡",
+    "sireId": "s_partholon",
+    "damId": "d_sweet_luna",
+    "parentSystem": "ヘロド系",
+    "subSystem": "パーソロン系",
+    "systemType": "SP",
+    "factors": ["大種牡馬", "スタミナ"]
+  },
+  {
+    "id": "s_partholon",
+    "name": "パーソロン",
+    "kana": "ぱーそろん",
+    "gender": "牡",
+    "sireId": "s_milesian",
+    "damId": "d_paleo",
+    "parentSystem": "ヘロド系",
+    "subSystem": "パーソロン系",
+    "systemType": "SP",
+    "factors": ["大種牡馬"]
+  },
+  {
+    "id": "s_milesian",
+    "name": "マイルシアン",
+    "kana": "まいるしあん",
+    "gender": "牡",
+    "sireId": "s_my_babu",
+    "parentSystem": "ヘロド系",
+    "subSystem": "バイアリーターク系",
+    "systemType": "NONE"
+  },
+  {
+    "id": "s_my_babu",
+    "name": "マイバブー",
+    "kana": "まいばぶー",
+    "gender": "牡",
+    "parentSystem": "ヘロド系",
+    "subSystem": "バイアリーターク系",
+    "systemType": "NONE",
+    "factors": ["大種牡馬"]
+  },
+  {
+    "id": "d_paleo",
+    "name": "パレオ",
+    "kana": "ぱれお",
+    "gender": "牝",
+    "parentSystem": "ハイペリオン系",
+    "subSystem": "ハイペリオン系",
+    "systemType": "ST"
+  },
+  {
+    "id": "d_sweet_luna",
+    "name": "スイートルナ",
+    "kana": "すいーとるな",
+    "gender": "牝",
+    "sireId": "s_speed_symboli",
+    "damId": "d_torai",
+    "parentSystem": "ロイヤルチャージャー系",
+    "subSystem": "ターンバック系",
+    "systemType": "ST"
+  },
+  {
+    "id": "s_speed_symboli",
+    "name": "スピードシンボリ",
+    "kana": "すぴーどしんぼり",
+    "gender": "牡",
+    "parentSystem": "ロイヤルチャージャー系",
+    "subSystem": "ターンバック系",
+    "systemType": "ST",
+    "factors": ["勝負根性"]
+  },
+  {
+    "id": "d_torai",
+    "name": "トウライ",
+    "kana": "とうらい",
+    "gender": "牝",
+    "parentSystem": "ヒムヤー系",
+    "subSystem": "ヒムヤー系",
+    "systemType": "NONE"
+  },
+  {
+    "id": "d_tokai_natural",
+    "name": "トウカイナチュラル",
+    "kana": "とうかいなちゅらる",
+    "gender": "牝",
+    "sireId": "s_nice_dancer",
+    "damId": "d_tokai_midori",
+    "parentSystem": "ノーザンダンサー系",
+    "subSystem": "ノーザンダンサー系",
+    "systemType": "ST"
+  },
+  {
+    "id": "s_nice_dancer",
+    "name": "ナイスダンサー",
+    "kana": "ないすだんさー",
+    "gender": "牡",
+    "sireId": "s_northern_dancer",
+    "parentSystem": "ノーザンダンサー系",
+    "subSystem": "ノーザンダンサー系",
+    "systemType": "ST",
+    "factors": ["名種牡馬"]
+  },
+  {
+    "id": "s_northern_dancer",
+    "name": "ノーザンダンサー",
+    "kana": "のーざんだんさー",
+    "gender": "牡",
+    "sireId": "s_nearctic",
+    "damId": "d_natalma",
+    "parentSystem": "ノーザンダンサー系",
+    "subSystem": "ノーザンダンサー系",
+    "systemType": "NONE",
+    "factors": ["大種牡馬"]
+  },
+  {
+    "id": "s_nearctic",
+    "name": "ニアークティック",
+    "kana": "にあーくてぃっく",
+    "gender": "牡",
+    "parentSystem": "ニアークティック系",
+    "subSystem": "ニアークティック系",
+    "systemType": "SP"
+  },
+  {
+    "id": "d_natalma",
+    "name": "ナタルマ",
+    "kana": "なたるま",
+    "gender": "牝",
+    "sireId": "s_native_dancer",
+    "parentSystem": "ネイティヴダンサー系",
+    "subSystem": "ネイティヴダンサー系",
+    "systemType": "SP"
+  },
+  {
+    "id": "d_tokai_midori",
+    "name": "トウカイミドリ",
+    "kana": "とうかいみどり",
+    "gender": "牝",
+    "sireId": "s_faberge",
+    "parentSystem": "プリンスリーギフト系",
+    "subSystem": "プリンスリーギフト系",
+    "systemType": "SP"
+  },
+  {
+    "id": "s_faberge",
+    "name": "ファバージ",
+    "kana": "ふぁばーじ",
+    "gender": "牡",
+    "parentSystem": "プリンスリーギフト系",
+    "subSystem": "プリンスリーギフト系",
+    "systemType": "SP",
+    "factors": ["スピード"]
+  },
+  {
+    "id": "d_ruffian",
+    "name": "ラフィアン",
+    "kana": "らふぃあん",
+    "gender": "牝",
+    "sireId": "s_reviewer",
+    "damId": "d_shenanigans",
+    "parentSystem": "ボールドルーラー系",
+    "subSystem": "ボールドルーラー系",
+    "systemType": "SP",
+    "factors": ["スピード", "勝負根性"]
+  },
+  {
+    "id": "s_reviewer",
+    "name": "レビュアー",
+    "kana": "れびゅあー",
+    "gender": "牡",
+    "sireId": "s_bold_ruler",
+    "damId": "d_broadway",
+    "parentSystem": "ボールドルーラー系",
+    "subSystem": "ボールドルーラー系",
+    "systemType": "SP",
+    "factors": ["スピード"]
+  },
+  {
+    "id": "s_bold_ruler",
+    "name": "ボールドルーラー",
+    "kana": "ぼーるどるーらー",
+    "gender": "牡",
+    "sireId": "s_nasrullah",
+    "damId": "d_miss_disco",
+    "parentSystem": "ボールドルーラー系",
+    "subSystem": "ボールドルーラー系",
+    "systemType": "SP",
+    "factors": ["大種牡馬", "スピード"]
+  },
+  {
+    "id": "s_nasrullah",
+    "name": "ナスルーラ",
+    "kana": "なするーら",
+    "gender": "牡",
+    "parentSystem": "ナスルーラ系",
+    "subSystem": "ナスルーラ系",
+    "systemType": "SP",
+    "factors": ["大種牡馬"]
+  },
+  {
+    "id": "d_miss_disco",
+    "name": "ミスディスコ",
+    "kana": "みすでぃすこ",
+    "gender": "牝",
+    "parentSystem": "ヒムヤー系",
+    "subSystem": "ヒムヤー系",
+    "systemType": "NONE"
+  },
+  {
+    "id": "d_broadway",
+    "name": "ブロードウェイ",
+    "kana": "ぶろーどうぇい",
+    "gender": "牝",
+    "sireId": "s_hasty_road",
+    "parentSystem": "ヒムヤー系",
+    "subSystem": "ヒムヤー系",
+    "systemType": "NONE"
+  },
+  {
+    "id": "s_hasty_road",
+    "name": "ヘイスティロード",
+    "kana": "へいすてぃろーど",
+    "gender": "牡",
+    "parentSystem": "ヒムヤー系",
+    "subSystem": "ヒムヤー系",
+    "systemType": "NONE"
+  },
+  {
+    "id": "d_shenanigans",
+    "name": "シェナニガンズ",
+    "kana": "しぇなにがんず",
+    "gender": "牝",
+    "sireId": "s_native_dancer",
+    "damId": "d_bold_sequence",
+    "parentSystem": "ネイティヴダンサー系",
+    "subSystem": "ネイティヴダンサー系",
+    "systemType": "SP"
+  },
+  {
+    "id": "s_native_dancer",
+    "name": "ネイティヴダンサー",
+    "kana": "ねぃてぃぶだんさー",
+    "gender": "牡",
+    "sireId": "s_polynesian",
+    "damId": "d_geisha",
+    "parentSystem": "ネイティヴダンサー系",
+    "subSystem": "ネイティヴダンサー系",
+    "systemType": "SP",
+    "factors": ["大種牡馬"]
+  },
+  {
+    "id": "s_polynesian",
+    "name": "ポリネシアン",
+    "kana": "ぽりねしあん",
+    "gender": "牡",
+    "parentSystem": "シカンブル系",
+    "subSystem": "ポリネシアン系",
+    "systemType": "SP"
+  },
+  {
+    "id": "d_geisha",
+    "name": "ゲイシャ",
+    "kana": "げいしゃ",
+    "gender": "牝",
+    "parentSystem": "ゲインズボロー系",
+    "subSystem": "ゲインズボロー系",
+    "systemType": "NONE"
+  },
+  {
+    "id": "d_bold_sequence",
+    "name": "ボールドシークエンス",
+    "kana": "ぼーるどしーくえんす",
+    "gender": "牝",
+    "sireId": "s_bold_ruler",
+    "parentSystem": "ボールドルーラー系",
+    "subSystem": "ボールドルーラー系",
+    "systemType": "SP"
+  }
+]
