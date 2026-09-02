@@ -10,6 +10,14 @@ export default function App() {
   const [selectedSire, setSelectedSire] = useState<Horse | null>(null);
   const [selectedDam, setSelectedDam] = useState<Horse | null>(null);
 
+  // 架空馬登録フォームの入力用ステート
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [newHorseName, setNewHorseName] = useState('');
+  const [newHorseKana, setNewHorseKana] = useState('');
+  const [newHorseGender, setNewHorseGender] = useState<'牡' | '牝'>('牡');
+  const [newHorseParentSystem, setNewHorseParentSystem] = useState('ヘイルトゥリーズン系');
+  const [newHorseSubSystem, setNewHorseSubSystem] = useState('サンデーサイレンス系');
+
   // データ読み込み
   useEffect(() => {
     fetch('/data/horses.json')
@@ -30,12 +38,43 @@ export default function App() {
     (h) => h.gender === '牝' && (h.name.includes(damSearch) || h.kana.includes(damSearch))
   );
 
-  const sireTree = selectedSire ? buildPedigreeTree(selectedSire.id, horseMap) : null;
-  const damTree = selectedDam ? buildPedigreeTree(selectedDam.id, horseMap) : null;
   const inbreeding =
     selectedSire && selectedDam
       ? detectInbreeding(selectedSire.id, selectedDam.id, horseMap)
       : [];
+
+  // 架空馬（産駒）の追加処理
+  const handleAddFictionalHorse = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newHorseName.trim()) return;
+
+    const newId = `fictional_${Date.now()}`;
+    const createdHorse: Horse = {
+      id: newId,
+      name: newHorseName,
+      kana: newHorseKana || newHorseName,
+      gender: newHorseGender,
+      sireId: selectedSire ? selectedSire.id : undefined,
+      damId: selectedDam ? selectedDam.id : undefined,
+      parentSystem: newHorseParentSystem,
+      subSystem: newHorseSubSystem,
+      spFactor: false,
+      stFactor: false,
+    };
+
+    const updatedHorses = [...horses, createdHorse];
+    const updatedMap = new Map(horseMap);
+    updatedMap.set(newId, createdHorse);
+
+    setHorses(updatedHorses);
+    setHorseMap(updatedMap);
+
+    // フォームのリセット
+    setNewHorseName('');
+    setNewHorseKana('');
+    setShowAddForm(false);
+    alert(`架空馬「${createdHorse.name}」を登録しました！検索から選択可能です。`);
+  };
 
   return (
     <div style={{ padding: '16px', fontFamily: 'sans-serif', maxWidth: '600px', margin: '0 auto' }}>
@@ -118,6 +157,95 @@ export default function App() {
             </ul>
           ) : (
             <p style={{ color: '#188038' }}>インブリードなし（アウトブリード）</p>
+          )}
+
+          <hr style={{ margin: '16px 0', border: 'none', borderTop: '1px solid #ddd' }} />
+
+          {/* 産駒（架空馬）の登録ボタン */}
+          {!showAddForm ? (
+            <button
+              onClick={() => setShowAddForm(true)}
+              style={{
+                width: '100%',
+                padding: '10px',
+                backgroundColor: '#1a73e8',
+                color: '#fff',
+                border: 'none',
+                borderRadius: '6px',
+                fontWeight: 'bold',
+                fontSize: '14px',
+              }}
+            >
+              ＋ この配合で生まれた自家生産馬（架空馬）を登録する
+            </button>
+          ) : (
+            <form onSubmit={handleAddFictionalHorse} style={{ backgroundColor: '#fff', padding: '12px', borderRadius: '6px', border: '1px solid #ccc' }}>
+              <h3 style={{ marginTop: 0, fontSize: '15px' }}>自家生産馬（架空馬）の登録</h3>
+              <p style={{ fontSize: '12px', color: '#666', marginTop: 0 }}>
+                父: {selectedSire.name} / 母: {selectedDam.name}
+              </p>
+
+              <div style={{ marginBottom: '8px' }}>
+                <label style={{ fontSize: '12px', display: 'block' }}>馬名 (必須):</label>
+                <input
+                  type="text"
+                  required
+                  placeholder="例: トウカイパルス"
+                  value={newHorseName}
+                  onChange={(e) => setNewHorseName(e.target.value)}
+                  style={{ width: '100%', padding: '6px', boxSizing: 'border-box' }}
+                />
+              </div>
+
+              <div style={{ marginBottom: '8px' }}>
+                <label style={{ fontSize: '12px', display: 'block' }}>かな:</label>
+                <input
+                  type="text"
+                  placeholder="例: とうかいぱるす"
+                  value={newHorseKana}
+                  onChange={(e) => setNewHorseKana(e.target.value)}
+                  style={{ width: '100%', padding: '6px', boxSizing: 'border-box' }}
+                />
+              </div>
+
+              <div style={{ marginBottom: '8px' }}>
+                <label style={{ fontSize: '12px', display: 'block' }}>性別:</label>
+                <select
+                  value={newHorseGender}
+                  onChange={(e) => setNewHorseGender(e.target.value as '牡' | '牝')}
+                  style={{ width: '100%', padding: '6px' }}
+                >
+                  <option value="牡">牡（種牡馬候補）</option>
+                  <option value="牝">牝（繁殖牝馬候補）</option>
+                </select>
+              </div>
+
+              <div style={{ marginBottom: '12px' }}>
+                <label style={{ fontSize: '12px', display: 'block' }}>子系統 (自動継承/変更可能):</label>
+                <input
+                  type="text"
+                  value={newHorseSubSystem}
+                  onChange={(e) => setNewHorseSubSystem(e.target.value)}
+                  style={{ width: '100%', padding: '6px', boxSizing: 'border-box' }}
+                />
+              </div>
+
+              <div style={{ display: 'flex', gap: '8px' }}>
+                <button
+                  type="submit"
+                  style={{ flex: 1, padding: '8px', backgroundColor: '#34a853', color: '#fff', border: 'none', borderRadius: '4px', fontWeight: 'bold' }}
+                >
+                  登録決定
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowAddForm(false)}
+                  style={{ padding: '8px', backgroundColor: '#999', color: '#fff', border: 'none', borderRadius: '4px' }}
+                >
+                  キャンセル
+                </button>
+              </div>
+            </form>
           )}
         </section>
       )}
