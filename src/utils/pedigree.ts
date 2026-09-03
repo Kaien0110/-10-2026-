@@ -1,236 +1,82 @@
-import { Horse } from '../types/horse';
-
-export interface PedigreeNode {
-  horse?: Horse;
-  sire?: PedigreeNode;
-  dam?: PedigreeNode;
-}
-
-export interface InbreedingResult {
-  horseName: string;
-  generations: string;
-}
+import { Horse, FactorType } from '../types/horse';
 
 export interface EvaluatedTheory {
   name: string;
-  category: '爆発力' | '能力・サブパラ' | '危険度';
-  description: string;
-  boost: '小' | '中' | '大' | '特大';
+  boost: string;       // 例: "＋4", "特大", "大" など
+  description: string; // 詳しい解説文
 }
 
-// 4代血統木の構築
-export function buildPedigreeTree(
-  horseId: string,
-  horseMap: Map<string, Horse>,
-  depth: number = 0
-): PedigreeNode | undefined {
-  if (depth > 3) return undefined;
+// インブリード検出処理
+export function detectInbreeding(sire: Horse, dam: Horse, horseMap: Map<string, Horse>): EvaluatedTheory[] {
+  const theories: EvaluatedTheory[] = [];
   
-  const horse = horseMap.get(horseId);
-  if (!horse) return undefined;
-
-  return {
-    horse,
-    sire: horse.sireId ? buildPedigreeTree(horse.sireId, horseMap, depth + 1) : undefined,
-    dam: horse.damId ? buildPedigreeTree(horse.damId, horseMap, depth + 1) : undefined,
-  };
-}
-
-// インブリード検出
-export function detectInbreeding(
-  sireId: string,
-  damId: string,
-  horseMap: Map<string, Horse>
-): InbreedingResult[] {
-  const sireAncestors = getAncestorsWithGenerations(sireId, horseMap, 1, 4);
-  const damAncestors = getAncestorsWithGenerations(damId, horseMap, 1, 4);
-
-  const results: InbreedingResult[] = [];
-  const processedNames = new Set<string>();
-
-  sireAncestors.forEach((sGen, name) => {
-    if (damAncestors.has(name) && !processedNames.has(name)) {
-      processedNames.add(name);
-      const dGen = damAncestors.get(name)!;
-      const sMatches = sGen.map((g) => g + 1).join(',');
-      const dMatches = dGen.map((g) => g + 1).join(',');
-      
-      results.push({
-        horseName: name,
-        generations: `${sMatches}x${dMatches}`,
-      });
-    }
-  });
-
-  return results;
-}
-
-function getAncestorsWithGenerations(
-  horseId: string,
-  horseMap: Map<string, Horse>,
-  currentGen: number,
-  maxGen: number
-): Map<string, number[]> {
-  const ancestors = new Map<string, number[]>();
-  if (currentGen > maxGen) return ancestors;
-
-  const traverse = (hId: string, gen: number) => {
-    if (gen > maxGen) return;
-    const h = horseMap.get(hId);
-    if (!h) return;
-
-    if (!ancestors.has(h.name)) {
-      ancestors.set(h.name, []);
-    }
-    ancestors.get(h.name)!.push(gen);
-
-    if (h.sireId) traverse(h.sireId, gen + 1);
-    if (h.damId) traverse(h.damId, gen + 1);
-  };
-
-  const horse = horseMap.get(horseId);
-  if (horse) {
-    if (horse.sireId) traverse(horse.sireId, currentGen);
-    if (horse.damId) traverse(horse.damId, currentGen);
+  // 親系統・子系統の重複チェック（インブリード判定の簡易例）
+  if (sire.subSystem && dam.subSystem && sire.subSystem === dam.subSystem) {
+    theories.push({
+      name: `${sire.subSystem} のインブリード`,
+      boost: '危険度あり / 爆発力UP',
+      description: `父と母の両方に【${sire.subSystem}】が含まれています。血が濃くなるため能力が上がりますが、危険度にも注意が必要です。`
+    });
   }
 
-  return ancestors;
+  return theories;
 }
 
-// 3代前先祖（8頭）の親系統・子系統リストを取得
-export function get3rdGenAncestors(horseId: string, horseMap: Map<string, Horse>): Horse[] {
-  const list: Horse[] = [];
-  const traverse = (hId: string, depth: number) => {
-    const h = horseMap.get(hId);
-    if (!h) return;
-    if (depth === 3) {
-      list.push(h);
-      return;
-    }
-    if (h.sireId) traverse(h.sireId, depth + 1);
-    if (h.damId) traverse(h.damId, depth + 1);
-  };
-  traverse(horseId, 0);
-  return list;
-}
-
-// 配合理論の総合判定ロジック
+// 配合理論の評価メイン処理
 export function evaluateBreedingTheories(
   sire: Horse,
   dam: Horse,
   horseMap: Map<string, Horse>
 ): EvaluatedTheory[] {
-  const theories: EvaluatedTheory[] = [];
-  const inbreedList = detectInbreeding(sire.id, dam.id, horseMap);
+  const results: EvaluatedTheory[] = [];
 
-  // 1. アウトブリード
-  if (inbreedList.length === 0) {
-    theories.push({
-      name: 'アウトブリード',
-      category: '爆発力',
-      description: '精神力・賢さ・健康・柔軟性・競走寿命が底上げされます',
-      boost: '小',
-    });
-  } else {
-    // インブリード各種
-    inbreedList.forEach((ib) => {
-      if (ib.generations === '3x4' || ib.generations === '4x3') {
-        theories.push({
-          name: `奇跡の血量 (${ib.horseName} ${ib.generations})`,
-          category: '爆発力',
-          description: 'その先祖馬の特徴を強く引き継ぎます（危険度あり）',
-          boost: '大',
-        });
-      } else {
-        theories.push({
-          name: `インブリード (${ib.horseName} ${ib.generations})`,
-          category: '爆発力',
-          description: '血統の濃さに比例して能力を引き出します（危険度増加）',
-          boost: '中',
-        });
-      }
+  // 1. 血脈活性化配合（親系統の多様性）
+  if (sire.parentSystem !== dam.parentSystem) {
+    results.push({
+      name: '血脈活性化配合（簡易判定）',
+      boost: '＋4',
+      description: '父と母の親系統が異なっており、血統の多様性が保たれています。'
     });
   }
 
-  // 2. ラインブリード系判定
-  if (sire.parentSystem === dam.parentSystem) {
-    if (sire.subSystem !== dam.subSystem) {
-      theories.push({
-        name: '親系統ラインブリード',
-        category: '爆発力',
-        description: '同親系統・異子系統による配合',
-        boost: '中',
-      });
-    } else {
-      theories.push({
-        name: '子系統ラインブリード',
-        category: '爆発力',
-        description: '同子系統による濃いラインブリード',
-        boost: '大',
-      });
-    }
-  }
+  // 2. SP/ST昇華理論
+  const sireHasSP = sire.spFactor || sire.factors?.includes('sp');
+  const damHasSP = dam.spFactor || dam.factors?.includes('sp');
 
-  // 3. 血脈活性化配合
-  const sire3rd = get3rdGenAncestors(sire.id, horseMap);
-  const dam3rd = get3rdGenAncestors(dam.id, horseMap);
-  const all3rdSystems = new Set([...sire3rd, ...dam3rd].map((h) => h.parentSystem));
-
-  if (all3rdSystems.size >= 8) {
-    theories.push({
-      name: '血脈活性化配合 (8系統)',
-      category: '爆発力',
-      description: '3代前先祖の親系統が8種類存在',
-      boost: '特大',
-    });
-  } else if (all3rdSystems.size >= 6) {
-    theories.push({
-      name: '血脈活性化配合 (6〜7系統)',
-      category: '爆発力',
-      description: '3代前先祖の親系統が6種類以上存在',
-      boost: '大',
+  if (sireHasSP && damHasSP) {
+    results.push({
+      name: 'SP昇華配合',
+      boost: '＋3',
+      description: '両親ともにスピード（SP）因子を保有しています。産駒のスピード上限値と瞬発力が向上します。'
     });
   }
 
-  // 4. 系統特性昇華配合 (SP / ST)
-  if (sire.spFactor && dam.spFactor) {
-    theories.push({
-      name: '系統特性昇華配合 (SP)',
-      category: '能力・サブパラ',
-      description: '父母ともにスピード系統',
-      boost: '中',
-    });
-  } else if (sire.stFactor && dam.stFactor) {
-    theories.push({
-      name: '系統特性昇華配合 (ST)',
-      category: '能力・サブパラ',
-      description: '父母ともにスタミナ系統',
-      boost: '中',
-    });
-  } else if ((sire.spFactor && dam.stFactor) || (sire.stFactor && dam.spFactor)) {
-    theories.push({
-      name: '系統特性融合配合 (SP・ST)',
-      category: '能力・サブパラ',
-      description: 'スピード系とスタミナ系の融合によるパワー上昇',
-      boost: '大',
+  const sireHasST = sire.stFactor || sire.factors?.includes('st');
+  const damHasST = dam.stFactor || dam.factors?.includes('st');
+
+  if (sireHasST && damHasST) {
+    results.push({
+      name: 'ST昇華配合',
+      boost: '＋3',
+      description: '両親ともにスタミナ（ST）因子を保有しています。産駒のスタミナと柔軟性が強化されます。'
     });
   }
 
-  // 5. ニックス判定（同一子系統の簡易ニックス例）
-  if (sire.subSystem && dam.subSystem) {
-    // 簡易サンプルロジック
-    if (
-      (sire.subSystem.includes('サンデー') && dam.subSystem.includes('トニービン')) ||
-      (sire.subSystem.includes('パーソロン') && dam.subSystem.includes('ボールドルーラー'))
-    ) {
-      theories.push({
-        name: 'シングルニックス',
-        category: '爆発力',
-        description: '相性の良い子系統同士の配合',
-        boost: '小',
-      });
-    }
+  // 3. ニックス判定（例: トニービン系やサンデー系など）
+  if (
+    (sire.subSystem === 'トニービン系' || dam.subSystem === 'トニービン系') &&
+    (sire.subSystem.includes('サンデー') || dam.subSystem.includes('サンデー'))
+  ) {
+    results.push({
+      name: 'シングルニックス',
+      boost: '＋2',
+      description: '相性の良い系統同士（サンデーサイレンス系×トニービン系）の組み合わせです。'
+    });
   }
 
-  return theories;
+  // 4. インブリード判定の結合
+  const inbreeds = detectInbreeding(sire, dam, horseMap);
+  results.push(...inbreeds);
+
+  return results;
 }
